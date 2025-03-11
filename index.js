@@ -28,6 +28,7 @@ async function run() {
 
     const menuCollection = client.db("restaurentdb").collection("menu");
     const reviewCollection = client.db("restaurentdb").collection("reviews");
+    const cartCollection = client.db("restaurentdb").collection("carts");
 
     // API Route to Get Menu
     app.get('/menu', async (req, res) => {
@@ -44,7 +45,19 @@ async function run() {
     app.get('/reviews', async(req, res) => {
         const result = await reviewCollection.find().toArray();
         res.send(result);
-    })
+    });
+
+    // Carts collection
+    app.get('/carts', async(req, res) => {
+      const result = await cartCollection.find().toArray();
+      res.send(result);
+    });
+
+    app.post('/carts', async(req, res) => {
+      const cartItems = req.body;
+      const result = await cartCollection.insertOne(cartItems);
+      res.send(result);
+    });
 
     // Start the Server **AFTER** MongoDB is connected
     app.listen(port, () => {
