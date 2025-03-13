@@ -26,9 +26,24 @@ async function run() {
     await client.connect();
     console.log("✅ Connected to MongoDB!");
 
+    const userCollection = client.db("restaurentdb").collection("users");
     const menuCollection = client.db("restaurentdb").collection("menu");
     const reviewCollection = client.db("restaurentdb").collection("reviews");
     const cartCollection = client.db("restaurentdb").collection("carts");
+
+    // Users related API start
+     app.post('/users', async(req, res) => {
+      const user = req.body;
+      // insert email if user does not exist
+       const query = {email : user.email};
+       const existingUser = await userCollection.findOne(query);
+       if(existingUser){
+        return res.send({message: 'User alrady Exist'})
+       }
+      const result = await userCollection.insertOne(user);
+      res.send(result)
+     })
+    // Users related API end
 
     // API Route to Get Menu
     app.get('/menu', async (req, res) => {
