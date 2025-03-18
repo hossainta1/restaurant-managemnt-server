@@ -136,7 +136,7 @@ async function run() {
       }
     });
 
-    app.post('/menu', async(res, req) => {
+    app.post('/menu', verifyToken, verifyAdmin, async(req, res) => {
       const item = req.body;
       const result = await menuCollection.insertOne(item);
       res.send(result);
